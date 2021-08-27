@@ -1,0 +1,116 @@
+.table {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    
+    margin-top: 2rem;
+
+    width: 100%;
+
+    flex-direction: column;
+
+    text-align: center;
+
+    & button {
+        width: 8rem;
+        height: 1.4rem;
+
+        font-weight: 600;
+
+        background: #f3aa3d;
+        
+        border: 1px solid #000;
+
+        border-radius: 1rem;
+        margin-bottom: 0.8rem;
+        transition: 0.4s;
+        cursor: pointer;
+
+        &:hover {
+            background: #f7c170;
+            border: 1px solid #9c9e9e;
+        }
+    }
+
+    & h2 {
+        margin-bottom: 3rem;
+    }
+    
+    & table {
+        width: 50rem;
+        height: 3rem;
+        border-collapse: collapse;
+        background: #fff;
+    }
+
+    & table th, td {
+        border: 1px solid #000; 
+    }
+}
+.title {
+    text-align: center;
+    margin: 1rem;
+    
+
+    & h1, h2, h3 {
+        margin: 0.4rem;
+    }
+}
+
+.chart {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 2rem;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 4rem;
+
+    .module {
+
+        font-size: 1.2rem;
+        margin-top: 2rem;
+        color: #fff;
+    }
+}
+
+.container {
+
+    .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    
+        text-decoration: none;
+        color: #000;
+        font-size: 1.6rem;
+    
+        width: 10rem;
+        height: 3rem;
+        margin: 2rem;
+    
+        cursor: pointer;
+        border: 2px solid #fff;
+        border-radius: 2rem;
+        background: #6264ee;
+    
+        transition: 0.4s;
+    
+        &:hover {
+            opacity: 0.8;
+            border: 2px solid #6264ee;
+            background: #fff;
+        }
+}
+
+
+}
