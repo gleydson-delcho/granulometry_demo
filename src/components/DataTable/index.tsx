@@ -8,7 +8,6 @@ export interface TestData {
     test: string;
     qtdMaterial: number;
 };
-
 interface FormData {
     id: number;
     testId: { id: number; };
@@ -16,25 +15,37 @@ interface FormData {
     openingSieve: string;
     tare: number;
     tareMaterial: number;
-}
+};
 
 const DataTable = () => {
 
     const [useId, setUseId] = useState(0);
 
     const testData: TestData[] = JSON.parse(String(localStorage.getItem('test'))) || [];
-    const formData: FormData[]  = JSON.parse(String(localStorage.getItem('formData'))) || [];
+    const formData: FormData[] = JSON.parse(String(localStorage.getItem('formData'))) || [];
+
     const selectDataForId = formData?.filter(item => {
-        if(item.testId.id === useId){
+        if (item.testId.id === useId) {
             return item;
         }
     });
-    const calcMaterialResult = selectDataForId.map(item => {
-        const solids = item.tareMaterial - item.tare
-        return Number(solids.toFixed(2));
+
+    const qtdPerTestId = testData[useId]?.qtdMaterial;
+
+    const percRetained = selectDataForId.map(item => {
+        const solids = (item.tareMaterial - item.tare).toFixed(2);
+        const retainedMaterial = (Number(solids) / qtdPerTestId) * 100;
+        return retainedMaterial
     });
 
-    console.log(calcMaterialResult)
+    const returnResultDataChart = selectDataForId.map((item, index) => {
+        let newReturnAcc: any[] = [];
+        percRetained.reduce(function (a: number, b: number, i: number): number { return Number((newReturnAcc[i]) = [a + b]) }, 0);
+        return [Number(item.openingSieve), ...newReturnAcc[index]];
+    }
+    );
+
+    console.log(returnResultDataChart)
 
     const mockData = {
 
@@ -68,12 +79,7 @@ const DataTable = () => {
                     options={mockData.options}
                     data={[
                         [mockData.xaxis.title, mockData.yaxis.title],
-                        [8, 12],
-                        [4, 5.5],
-                        [11, 14],
-                        [4, 5],
-                        [3, 3.5],
-                        [6.5, 7],
+                        ...returnResultDataChart
                     ]}
                     rootProps={{ 'data-testid': 1 }}
                 />
