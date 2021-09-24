@@ -1,0 +1,17 @@
+.help {
+    img {
+        cursor: pointer;
+    }
+
+}
+
+.helpInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid #6264ee;
+    border-radius: 1rem;
+    background: #f3aa3d;
+}
