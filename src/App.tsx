@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import DataForm from './pages/DataForm';
 import Home from './pages/Home';
 import TestForm from './pages/TestForm';
+import './styles/global.scss';
 
 function App() {
   return (

@@ -1,53 +1,63 @@
-.table {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.data {
 
-    
-    margin-top: 2rem;
+    .chart {
 
-    width: 100%;
-
-    flex-direction: column;
-
-    text-align: center;
-
-    & button {
-        width: 8rem;
-        height: 1.4rem;
-
-        font-weight: 600;
-
-        background: #f3aa3d;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         
-        border: 1px solid #000;
-
-        border-radius: 1rem;
-        margin-bottom: 0.8rem;
-        transition: 0.4s;
-        cursor: pointer;
-
-        &:hover {
-            background: #f7c170;
-            border: 1px solid #9c9e9e;
+        &svg {
+            width: 20rem;
+            height: 12rem ;
         }
     }
-
-    & h2 {
-        margin-bottom: 3rem;
-    }
     
-    & table {
-        width: 50rem;
-        height: 3rem;
-        border-collapse: collapse;
-        background: #fff;
-    }
-
-    & table th, td {
-        border: 1px solid #000; 
+    .table {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        width: 100%;
+    
+        flex-direction: column;
+    
+        text-align: center;
+    
+        & button {
+            width: 8rem;
+            height: 1.4rem;
+    
+            font-weight: 600;
+    
+            background: #f3aa3d;
+            
+            border: 1px solid #000;
+    
+            border-radius: 1rem;
+            margin-bottom: 0.8rem;
+            transition: 0.4s;
+            cursor: pointer;
+    
+            &:hover {
+                background: #f7c170;
+                border: 1px solid #9c9e9e;
+            }
+        }
+        
+        & table {
+            width: 50rem;
+            height: 3rem;
+            border-collapse: collapse;
+            background: #fff;
+        }
+    
+        & table th, td {
+            border: 1px solid #000; 
+        }
     }
 }
+
+
 .title {
     text-align: center;
     margin: 1rem;
@@ -56,15 +66,6 @@
     & h1, h2, h3 {
         margin: 0.4rem;
     }
-}
-
-.chart {
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-top: 2rem;
 }
 
 .options {
@@ -84,6 +85,7 @@
 }
 
 .container {
+    
 
     .button {
         display: flex;

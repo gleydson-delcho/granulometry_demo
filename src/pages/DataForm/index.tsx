@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
+import './form.scss';
 
 export interface Value {
     id: number;
@@ -21,8 +22,9 @@ interface FormData {
 const DataForm = () => {
 
     const history = useHistory();
-    
+
     const [isActive, setIsActive] = useState<boolean>(false);
+    const [helpActive, setHelpActive] = useState<boolean>(false);
     const [isNotCreate, setIsNotCreate] = useState<boolean>(false);
 
     const [useId, setUseId] = useState(0);
@@ -50,9 +52,9 @@ const DataForm = () => {
             // percRetained: null,
         }
         console.log(values);
-        if(!values) {            
+        if (!values) {
             errorMessage();
-        }else {
+        } else {
             formData.push(values);
             localStorage.setItem('formData', JSON.stringify(formData));
             successMessage();
@@ -78,15 +80,22 @@ const DataForm = () => {
             <div className="container">
 
                 <a href='/' className="back" >
-                    Voltar ao inicio
+                    <img src="./images/back.svg" alt="back" />
                 </a>
 
                 <div className="head">
                     <h2>Formulário para cadastrar os dados da granulometria</h2>
-                    <h2>Atenção !!!</h2>
-                    <p>Estes dados devem ser cadastrados para cada peneira com a qual foi realizado o ensaio...</p>
-                    <h2>Importante !!!</h2>
-                    <p>Caso ainda não tenha um teste cadastrado, acesse clicando no botão abaixo para cadastrar o teste.</p>
+
+                    <p className="help"> <img src="" alt="help" onClick={() => { helpActive == false ? setHelpActive(true) : setHelpActive(false) }} /> Ajuda!</p>
+                    {
+                        helpActive &&
+                        <div className="helpInfo">
+                            <h2>Atenção !!!</h2>
+                            <p>Estes dados devem ser cadastrados para cada peneira com a qual foi realizado o ensaio...</p>
+                            <h2>Importante !!!</h2>
+                            <p>Caso ainda não tenha um teste cadastrado, acesse clicando no botão abaixo para cadastrar o teste.</p>
+                        </div>
+                    }
                     <a href='/cadastrar-teste' className="button" >
                         Novo Teste +
                     </a>

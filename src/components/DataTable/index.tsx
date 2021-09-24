@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Chart from 'react-google-charts';
+
+import FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 import './table.scss';
 
@@ -19,39 +22,42 @@ interface FormData {
 
 const DataTable = () => {
 
-    const [useId, setUseId] = useState(0);
-
+    const [useId, setUseId] = useState(1);
     const testData: TestData[] = JSON.parse(String(localStorage.getItem('test'))) || [];
     const formData: FormData[] = JSON.parse(String(localStorage.getItem('formData'))) || [];
-
     const selectDataForId = formData?.filter(item => {
         if (item.testId.id === useId) {
             return item;
+        } else {
+            return false;
         }
     });
 
-    const qtdPerTestId = testData[useId]?.qtdMaterial;
+    useEffect(() => {
+        const updateData = () => {
+            return selectDataForId
+        }
+        updateData()
+    }, [selectDataForId])
 
+    const qtdPerTestId = testData[useId - 1]?.qtdMaterial;
     const percRetained = selectDataForId.map(item => {
-        const solids = (item.tareMaterial - item.tare).toFixed(2);
+        const solids = (Number(item.tareMaterial) - Number(item.tare)).toFixed(2);
         const retainedMaterial = (Number(solids) / qtdPerTestId) * 100;
         return retainedMaterial
     });
-
     const returnResultDataChart = selectDataForId.map((item, index) => {
-        let newReturnAcc: any[] = [];
+        let newReturnAcc: number[][] = [];
         percRetained.reduce(function (a: number, b: number, i: number): number { return Number((newReturnAcc[i]) = [a + b]) }, 0);
-        return [Number(item.openingSieve), ...newReturnAcc[index]];
-    }
-    );
+        return [Number(item.openingSieve.replace(',', '.')), ...newReturnAcc[index]];
 
-    console.log(returnResultDataChart)
+    });
 
     const mockData = {
 
         options: {
             title: 'Abertura vs. % Retido Acumulada',
-            hAxis: { title: 'Abertura', logScale: true },
+            hAxis: { title: 'Abertura (mm)', logScale: true },
             vAxis: { title: '% Retido Acumulada', direction: '-1' },
             legend: 'none',
         },
@@ -63,41 +69,118 @@ const DataTable = () => {
         },
     }
 
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; chasrset=UTF-8';
+    const fileExtension = '.xlsx';
+    const exporting = () => {
+
+        const csvData = selectDataForId;
+        const fileName = 'Granulometria'
+
+        const ws = XLSX.utils.json_to_sheet(csvData);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], { type: fileType });
+        FileSaver.saveAs(data, fileName + fileExtension);
+    }
+
     return (
         <div className="container">
             <div className="title">
                 <h1>Dashboard Granulometria</h1>
                 <h3>Gráfico da distribuição granulométrica</h3>
-
             </div>
-            <div className="chart">
-                <Chart
-                    height={'300px'}
-                    width={'500px'}
-                    chartType="ScatterChart"
-                    loader={<div>Loading Chart</div>}
-                    options={mockData.options}
-                    data={[
-                        [mockData.xaxis.title, mockData.yaxis.title],
-                        ...returnResultDataChart
-                    ]}
-                    rootProps={{ 'data-testid': 1 }}
-                />
-            </div >
+            <section className="select">
 
-            <select
-                className="selection" value={useId}
-                onChange={e => setUseId(Number(e.target.value))}
-            >
-                <option value="" >Selecione o código desejado</option>
-                {
-                    testData?.map(el => {
-                        return (
-                            <option key={el.id} value={el.id}>{el.test}</option>
-                        )
-                    })
-                }
-            </select>
+                <label htmlFor="select">Escolha o material: </label>
+                <select
+                    className="selection" value={useId}
+                    onChange={e => setUseId((Number(e.target.value)))}
+                >
+                    {
+                        testData?.map(el => {
+                            return (
+                                <option key={el.id} value={el.id}>{el.test}</option>
+                            )
+                        })
+                    }
+                </select>
+            </section>
+
+            <section className="data">
+                <div className="chart">
+                    <Chart
+                        height={'400px'}
+                        width={'700px'}
+                        chartType="ScatterChart"
+                        loader={<div>Loading Chart</div>}
+                        options={mockData.options}
+                        data={[
+                            [mockData.xaxis.title, mockData.yaxis.title],
+                            ...returnResultDataChart
+                        ]}
+                        rootProps={{ 'data-testid': 1 }}
+                    />
+                </div >
+
+
+
+                <div className="table" key="table">
+                    <h2 >Dados - peneiramento</h2>
+                    <button type="button" onClick={(e) => exporting()}>Exportar Excel</button>
+                    <table id="dataTable" key="dataTable">
+                        <thead key="header">
+                            <tr key="title">
+                                {/* <th>Test Id</th> */}
+                                <th>Peneira</th>
+                                <th>Abertura (mm)</th>
+                                <th>Tara (g)</th>
+                                <th>Tara + Material (g)</th>
+                                <th>Retido (g)</th>
+                                <th>% Retida (g)</th>
+                                <th>% Retida Acumulada (g)</th>
+                                <th>Remover</th>
+                            </tr>
+                        </thead>
+                        <tbody key="body" >
+                            {
+                                selectDataForId?.map((item, index) => {
+
+                                    const retained = (Number(item.tareMaterial) - Number(item.tare)).toFixed(2);
+
+                                    const percRetained = (((Number(item.tareMaterial) - Number(item.tare)) / qtdPerTestId) * 100).toFixed(2);
+                                    console.log((qtdPerTestId))
+                                    const AccumulatedSum = returnResultDataChart.map(item => item[1])[0 + index];
+                                    const cStyle = {
+                                        cursor: "pointer"
+                                    }
+                                    const removeItem = (index: number) => {
+
+                                        if (index) {
+                                            formData.splice(index - 1, 1)
+                                            localStorage.setItem('formData', JSON.stringify(formData))
+                                        } else {
+                                            alert("O item não foi removido!")
+                                        }
+                                    };
+                                    return (
+                                        <tr key={item.id}>
+                                            {/* <td>{item.id}</td> */}
+                                            <td>Peneira {(item.openingSieve)} mm</td>
+                                            <td>{(item.openingSieve)}</td>
+                                            <td>{(item.tare)}</td>
+                                            <td>{(item.tareMaterial)}</td>
+                                            <td>{retained}</td>
+                                            <td>{percRetained}</td>
+                                            <td>{AccumulatedSum.toFixed(2)}</td>
+                                            <td style={cStyle} onClick={() => removeItem(item.id)}><img src="/images/minus.svg" alt="remover" /></td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
             <a className="button" href="/cadastrar-dados" >Novo +</a>
         </div>

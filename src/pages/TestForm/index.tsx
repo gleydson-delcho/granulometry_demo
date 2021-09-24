@@ -52,10 +52,11 @@ const TestForm = () => {
         <>
             <div className="container" >
                 <a href='/cadastrar-dados' className="back" >
-                    Voltar para o cadastro de dados
+                    <img src="./images/back.svg" alt="back" />
                 </a>
 
                 <div className="head">
+                    <p>Ajuda!</p>
                     <h2>Formulário para cadastrar um novo teste de granulometria</h2>
                     <h2>Atenção !!!</h2>
                     <p>Aqui será informado apenas o nome que deseja dar ao teste</p>
