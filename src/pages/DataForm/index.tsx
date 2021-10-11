@@ -12,7 +12,7 @@ interface FormData {
     id: number;
     testId: { id: number; };
     sieveName: string;
-    openingSieve: string;
+    openingSieve: number;
     tare: number;
     tareMaterial: number;
     // retained: null;
@@ -30,7 +30,7 @@ const DataForm = () => {
     const [useId, setUseId] = useState(0);
 
     const [sieveName, setSieveName] = useState('');
-    const [openingSieve, setOpeningSieve] = useState('');
+    const [openingSieve, setOpeningSieve] = useState(0);
     const [tare, setTare] = useState(0);
     const [tareMaterial, setTareMaterial] = useState(0);
 
@@ -40,7 +40,7 @@ const DataForm = () => {
 
     const register = async (event: FormEvent) => {
         event.preventDefault();
-
+        
         const values: FormData = {
             id: idIncrement,
             testId: { id: useId },
@@ -48,8 +48,6 @@ const DataForm = () => {
             openingSieve: openingSieve,
             tare: tare,
             tareMaterial: tareMaterial,
-            // retained: null,
-            // percRetained: null,
         }
         console.log(values);
         if (!values) {
@@ -86,7 +84,7 @@ const DataForm = () => {
                 <div className="head">
                     <h2>Formulário para cadastrar os dados da granulometria</h2>
 
-                    <p className="help"> <img src="" alt="help" onClick={() => { helpActive == false ? setHelpActive(true) : setHelpActive(false) }} /> Ajuda!</p>
+                    <p className="help"> <img src="" alt="help" onClick={() => { helpActive === false ? setHelpActive(true) : setHelpActive(false) }} /> Ajuda!</p>
                     {
                         helpActive &&
                         <div className="helpInfo">
@@ -125,7 +123,7 @@ const DataForm = () => {
                             type="text"
                             name="nomePeneira"
                             required
-                            onChange={e => setSieveName(e.target.value)}
+                            onChange={e => setSieveName(((e.target.value)))}
                         />
                     </div>
                     <div className="fields">
@@ -133,10 +131,11 @@ const DataForm = () => {
                             Informe a abertura da peneira em milimetros (mm):
                         </label>
                         <input placeholder="4.75"
-                            type="text"
+                            type="number"
+                            step='0.01'
                             name="aberturaPeneira"
                             required
-                            onChange={e => setOpeningSieve(e.target.value)}
+                            onChange={e => setOpeningSieve(Number((e.target.value).split(',').join('.')))}
                         />
                     </div>
                     <div className="fields">

@@ -15,7 +15,7 @@ interface FormData {
     id: number;
     testId: { id: number; };
     sieveName: string;
-    openingSieve: string;
+    openingSieve: number;
     tare: number;
     tareMaterial: number;
 };
@@ -23,8 +23,15 @@ interface FormData {
 const DataTable = () => {
 
     const [useId, setUseId] = useState(1);
-    const testData: TestData[] = JSON.parse(String(localStorage.getItem('test'))) || [];
-    const formData: FormData[] = JSON.parse(String(localStorage.getItem('formData'))) || [];
+    const [testData, setTestData] = useState<[TestData] | [] | undefined>();
+    const [formData, setFormData] = useState<[FormData]>();
+
+    useEffect(() => {
+        setTestData(JSON.parse(String(localStorage.getItem('test'))));
+        setFormData(JSON.parse(String(localStorage.getItem('formData'))));
+    }, [testData, formData])
+
+    
     const selectDataForId = formData?.filter(item => {
         if (item.testId.id === useId) {
             return item;
@@ -32,24 +39,31 @@ const DataTable = () => {
             return false;
         }
     });
+    const orderBySieve =selectDataForId?.sort((a, b)=> ((a.openingSieve) > (b.openingSieve)) ? -1 : 1);
+    // const arrayOpeningSieve = orderBySieve?.map(item=> item.openingSieve)
+        
 
-    useEffect(() => {
-        const updateData = () => {
-            return selectDataForId
+    const removeItem = (index: number) => {
+
+        if (index) {
+            formData?.splice(index - 1, 1);
+            localStorage.setItem('formData', JSON.stringify(formData));
+
+        } else {
+            alert("O item não foi removido!")
         }
-        updateData()
-    }, [selectDataForId])
+    };
 
-    const qtdPerTestId = testData[useId - 1]?.qtdMaterial;
-    const percRetained = selectDataForId.map(item => {
+    const qtdPerTestId = testData?.[useId - 1].qtdMaterial || 0;
+    const percRetained = selectDataForId?.map(item => {
         const solids = (Number(item.tareMaterial) - Number(item.tare)).toFixed(2);
         const retainedMaterial = (Number(solids) / qtdPerTestId) * 100;
         return retainedMaterial
     });
-    const returnResultDataChart = selectDataForId.map((item, index) => {
+    const returnResultDataChart = orderBySieve?.map((item, index) => {
         let newReturnAcc: number[][] = [];
-        percRetained.reduce(function (a: number, b: number, i: number): number { return Number((newReturnAcc[i]) = [a + b]) }, 0);
-        return [Number(item.openingSieve.replace(',', '.')), ...newReturnAcc[index]];
+        percRetained?.reduce(function (a: number, b: number, i: number): number { return Number((newReturnAcc[i]) = [a + b]) }, 0);
+        return [Number(item.openingSieve), ...newReturnAcc[index]];
 
     });
 
@@ -76,7 +90,7 @@ const DataTable = () => {
         const csvData = selectDataForId;
         const fileName = 'Granulometria'
 
-        const ws = XLSX.utils.json_to_sheet(csvData);
+        const ws = XLSX.utils.json_to_sheet(csvData || []);
         const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         const data = new Blob([excelBuffer], { type: fileType });
@@ -116,7 +130,7 @@ const DataTable = () => {
                         options={mockData.options}
                         data={[
                             [mockData.xaxis.title, mockData.yaxis.title],
-                            ...returnResultDataChart
+                            ...returnResultDataChart || []
                         ]}
                         rootProps={{ 'data-testid': 1 }}
                     />
@@ -143,35 +157,26 @@ const DataTable = () => {
                         </thead>
                         <tbody key="body" >
                             {
-                                selectDataForId?.map((item, index) => {
+                                orderBySieve?.map((item, index) => {
 
                                     const retained = (Number(item.tareMaterial) - Number(item.tare)).toFixed(2);
 
                                     const percRetained = (((Number(item.tareMaterial) - Number(item.tare)) / qtdPerTestId) * 100).toFixed(2);
-                                    console.log((qtdPerTestId))
-                                    const AccumulatedSum = returnResultDataChart.map(item => item[1])[0 + index];
+                                    const AccumulatedSum = returnResultDataChart?.map(item => item[1])[0 + index];
+                                    const dimensionSieve = ((item.openingSieve)*100/100).toFixed(2);
                                     const cStyle = {
                                         cursor: "pointer"
                                     }
-                                    const removeItem = (index: number) => {
-
-                                        if (index) {
-                                            formData.splice(index - 1, 1)
-                                            localStorage.setItem('formData', JSON.stringify(formData))
-                                        } else {
-                                            alert("O item não foi removido!")
-                                        }
-                                    };
                                     return (
                                         <tr key={item.id}>
                                             {/* <td>{item.id}</td> */}
-                                            <td>Peneira {(item.openingSieve)} mm</td>
-                                            <td>{(item.openingSieve)}</td>
+                                            <td>Peneira {dimensionSieve} mm</td>
+                                            <td>{dimensionSieve}</td>
                                             <td>{(item.tare)}</td>
                                             <td>{(item.tareMaterial)}</td>
                                             <td>{retained}</td>
                                             <td>{percRetained}</td>
-                                            <td>{AccumulatedSum.toFixed(2)}</td>
+                                            <td>{AccumulatedSum?.toFixed(2)}</td>
                                             <td style={cStyle} onClick={() => removeItem(item.id)}><img src="/images/minus.svg" alt="remover" /></td>
                                         </tr>
                                     )
