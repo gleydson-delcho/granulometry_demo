@@ -11,17 +11,19 @@
             height: 12rem ;
         }
     }
-    
+   
     .table {
         display: flex;
         align-items: center;
         justify-content: center;
         
-        width: 100%;
+        width: 800px;
     
         flex-direction: column;
     
         text-align: center;
+
+        margin-bottom: 1rem;
     
         & button {
             width: 8rem;
@@ -115,7 +117,15 @@
             border: 2px solid #6264ee;
             background: #fff;
         }
+    }
 }
 
-
+@media(max-width: 820px) {
+    .data {
+        #dataTable {
+            width: 800px;
+            overflow-y: scroll;
+            
+        }
+    }
 }
