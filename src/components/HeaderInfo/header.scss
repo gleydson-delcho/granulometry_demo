@@ -1,0 +1,47 @@
+
+
+.headerOptions{
+    width: 80%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;    
+}
+
+.help {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & span {
+        font-size: 1rem;
+    }
+}
+
+.helpInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid #6264ee;
+    border-radius: 1rem;
+    background: #f3aa3d;
+}
+
+@media(max-width: 960px) {
+    .headerOptions{
+
+        width: 90%;        
+    }
+
+    .head {
+        & h2 {
+           text-align: center;
+        }
+    }
+
+    .helpInfo {
+        text-align: justify;
+    }
+}
