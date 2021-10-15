@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
+import HeaderInfo from "../../components/HeaderInfo";
 import './form.scss';
 
 export interface Value {
@@ -19,12 +20,19 @@ interface FormData {
     // percRetained: null;
 }
 
+
 const DataForm = () => {
+
+    const headerProps = {
+        path: '/',
+        attention: 'Estes dados devem ser cadastrados para cada peneira com a qual foi realizado o ensaio...',
+        titleForm: 'Formulário para cadastrar os dados da granulometria',
+        warning: 'Caso ainda não tenha um teste cadastrado, acesse clicando no botão abaixo para cadastrar o teste.'
+    }
 
     const history = useHistory();
 
     const [isActive, setIsActive] = useState<boolean>(false);
-    const [helpActive, setHelpActive] = useState<boolean>(false);
     const [isNotCreate, setIsNotCreate] = useState<boolean>(false);
 
     const [useId, setUseId] = useState(0);
@@ -40,7 +48,7 @@ const DataForm = () => {
 
     const register = async (event: FormEvent) => {
         event.preventDefault();
-        
+
         const values: FormData = {
             id: idIncrement,
             testId: { id: useId },
@@ -76,29 +84,18 @@ const DataForm = () => {
     return (
         <>
             <div className="container">
-
-                <a href='/' className="back" >
-                    <img src="./images/back.svg" alt="back" />
+                <HeaderInfo 
+                    path={headerProps.path}
+                    titleForm={headerProps.titleForm}
+                    attention={headerProps.attention}
+                    warning={headerProps.warning}
+                    />
+                    
+                <a href='/cadastrar-teste' className="button" >
+                    Novo Teste +
                 </a>
 
-                <div className="head">
-                    <h2>Formulário para cadastrar os dados da granulometria</h2>
-
-                    <p className="help"> <img src="" alt="help" onClick={() => { helpActive === false ? setHelpActive(true) : setHelpActive(false) }} /> Ajuda!</p>
-                    {
-                        helpActive &&
-                        <div className="helpInfo">
-                            <h2>Atenção !!!</h2>
-                            <p>Estes dados devem ser cadastrados para cada peneira com a qual foi realizado o ensaio...</p>
-                            <h2>Importante !!!</h2>
-                            <p>Caso ainda não tenha um teste cadastrado, acesse clicando no botão abaixo para cadastrar o teste.</p>
-                        </div>
-                    }
-                    <a href='/cadastrar-teste' className="button" >
-                        Novo Teste +
-                    </a>
-                </div>
-                <form className="form" onSubmit={register}>
+                <form className="formData" onSubmit={register}>
                     <div className="fields">
                         <label htmlFor="testId">Informe o código do teste que deseja ser relacionado: </label>
                         <select

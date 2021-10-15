@@ -21,17 +21,18 @@ interface FormData {
 };
 
 const DataTable = () => {
+    const dataForm = JSON.parse(String(localStorage.getItem('formData')));
+    const dataTest = JSON.parse(String(localStorage.getItem('test')))
 
     const [useId, setUseId] = useState(1);
-    const [testData, setTestData] = useState<[TestData] | [] | undefined>();
-    const [formData, setFormData] = useState<[FormData]>();
+    const [testData] = useState<[TestData]>(dataTest);
+    const [formData, setFormData] = useState<[FormData]>(dataForm);
 
+       
     useEffect(() => {
-        setTestData(JSON.parse(String(localStorage.getItem('test'))));
-        setFormData(JSON.parse(String(localStorage.getItem('formData'))));
-    }, [testData, formData])
+    }, [formData, testData])
 
-    
+
     const selectDataForId = formData?.filter(item => {
         if (item.testId.id === useId) {
             return item;
@@ -39,15 +40,15 @@ const DataTable = () => {
             return false;
         }
     });
-    const orderBySieve =selectDataForId?.sort((a, b)=> ((a.openingSieve) > (b.openingSieve)) ? -1 : 1);
-    // const arrayOpeningSieve = orderBySieve?.map(item=> item.openingSieve)
-        
+    const orderBySieve = selectDataForId?.sort((a, b) => ((a.openingSieve) > (b.openingSieve)) ? -1 : 1);
+
 
     const removeItem = (index: number) => {
 
         if (index) {
             formData?.splice(index - 1, 1);
             localStorage.setItem('formData', JSON.stringify(formData));
+            setFormData(JSON.parse(String(localStorage.getItem('formData'))));
 
         } else {
             alert("O item não foi removido!")
@@ -74,6 +75,8 @@ const DataTable = () => {
             hAxis: { title: 'Abertura (mm)', logScale: true },
             vAxis: { title: '% Retido Acumulada', direction: '-1' },
             legend: 'none',
+            backgroundColor: '#F0F8FF',
+
         },
         xaxis: {
             title: 'Abertura',
@@ -96,6 +99,11 @@ const DataTable = () => {
         const data = new Blob([excelBuffer], { type: fileType });
         FileSaver.saveAs(data, fileName + fileExtension);
     }
+
+    const heigthScreen = window.screen.height > 650 ? '25rem' : '18rem';
+    const widthScreen = window.screen.width > 710 ? '43rem' : '18rem';
+
+    console.log(window.screen.height)
 
     return (
         <div className="container">
@@ -123,8 +131,8 @@ const DataTable = () => {
             <section className="data">
                 <div className="chart">
                     <Chart
-                        height={'400px'}
-                        width={'700px'}
+                        height={heigthScreen}
+                        width={widthScreen}
                         chartType="ScatterChart"
                         loader={<div>Loading Chart</div>}
                         options={mockData.options}
@@ -163,7 +171,7 @@ const DataTable = () => {
 
                                     const percRetained = (((Number(item.tareMaterial) - Number(item.tare)) / qtdPerTestId) * 100).toFixed(2);
                                     const AccumulatedSum = returnResultDataChart?.map(item => item[1])[0 + index];
-                                    const dimensionSieve = ((item.openingSieve)*100/100).toFixed(2);
+                                    const dimensionSieve = ((item.openingSieve) * 100 / 100).toFixed(2);
                                     const cStyle = {
                                         cursor: "pointer"
                                     }

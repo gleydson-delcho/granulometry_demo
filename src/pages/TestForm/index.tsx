@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
+import HeaderInfo from "../../components/HeaderInfo";
 
 import './formTest.scss';
 
@@ -10,6 +11,13 @@ export interface Value {
 };
 
 const TestForm = () => {
+
+    const headerProps = {
+        path: '/cadastrar-dados',
+        titleForm: 'Formulário para cadastrar um novo teste de granulometria',
+        attention: 'Aqui será informado apenas o nome que deseja dar ao teste e a quantidade total de material que foi utilizado!',
+        warning: '',
+    }
 
     const history = useHistory();
 
@@ -51,16 +59,11 @@ const TestForm = () => {
     return (
         <>
             <div className="container" >
-                <a href='/cadastrar-dados' className="back" >
-                    <img src="./images/back.svg" alt="back" />
-                </a>
-
-                <div className="head">
-                    <p>Ajuda!</p>
-                    <h2>Formulário para cadastrar um novo teste de granulometria</h2>
-                    <h2>Atenção !!!</h2>
-                    <p>Aqui será informado apenas o nome que deseja dar ao teste</p>
-                </div>
+                <HeaderInfo
+                    path={headerProps.path}
+                    titleForm={headerProps.titleForm}
+                    attention={headerProps.attention}
+                />
                 <form className="form" onSubmit={register} id="form">
                     {
                         isActive &&
