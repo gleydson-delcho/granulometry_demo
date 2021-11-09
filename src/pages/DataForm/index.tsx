@@ -23,6 +23,7 @@ interface FormData {
 
 const DataForm = () => {
 
+    // Esta variável é responsável por passar as propriedades de cabeçalho da página.
     const headerProps = {
         path: '/',
         attention: 'Estes dados devem ser cadastrados para cada peneira com a qual foi realizado o ensaio...',
@@ -42,13 +43,18 @@ const DataForm = () => {
     const [tare, setTare] = useState(0);
     const [tareMaterial, setTareMaterial] = useState(0);
 
+    // Variáveis responsáveis por recuperar os dados do localstorage.
     const testData = JSON.parse(String(localStorage.getItem('test'))) || [];
     const formData = JSON.parse(String(localStorage.getItem('formData'))) || [];
+    
+    //Variável que realiza o incremento para o id (identificador) de cada dado cadastrado.
     const idIncrement = formData.length === undefined ? 0 : formData.length + 1;
 
+    //Esta função é responsável por enviar os dados do formulário para o localstorage.
     const register = async (event: FormEvent) => {
         event.preventDefault();
 
+        // Variável responsável por criar o objeto a ser enviado ao localstorage.
         const values: FormData = {
             id: idIncrement,
             testId: { id: useId },
@@ -57,7 +63,8 @@ const DataForm = () => {
             tare: tare,
             tareMaterial: tareMaterial,
         }
-        console.log(values);
+
+        //Condição de sucesso ou falha ao gravar os dados
         if (!values) {
             errorMessage();
         } else {
@@ -67,6 +74,7 @@ const DataForm = () => {
         }
     };
 
+    //Funções para ativar a mensagem de sucesso e erro.
     const successMessage = () => {
         setIsActive(true)
         setTimeout(() => {

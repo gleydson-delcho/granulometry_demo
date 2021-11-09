@@ -12,6 +12,8 @@ export interface Value {
 
 const TestForm = () => {
 
+
+    // Esta variável é responsável por passar as propriedades de cabeçalho da página.
     const headerProps = {
         path: '/cadastrar-dados',
         titleForm: 'Formulário para cadastrar um novo teste de granulometria',
@@ -27,9 +29,12 @@ const TestForm = () => {
     const [isActive, setIsActive] = useState<boolean>(false);
     const [isNotCreate, setIsNotCreate] = useState<boolean>(false);
 
+    // Variável responsável por recuperar os dados do localstorage.
     const testData = JSON.parse(String(localStorage.getItem('test'))) || [];
+    //Variável que realiza o incremento para o id (identificador) de cada dado cadastrado.
     const idIncrement = testData.length === undefined ? 0 : testData.length + 1;
 
+    //Esta função é responsável por enviar os dados do formulário para o localstorage.
     const register = async (event: FormEvent) => {
         event.preventDefault();
 
@@ -39,6 +44,7 @@ const TestForm = () => {
             qtdMaterial: newQtd
         };
 
+        //Condição criada para mostrar em tela a mensagem de erro caso os dados não sejam cadastrados.
         if (!value.test || !value.qtdMaterial) {
             setIsNotCreate(true);
             setTimeout(() => {
@@ -46,6 +52,7 @@ const TestForm = () => {
             }, 2000);
         } else {
 
+            //Este trecho lógico insere os dados no localstorage e mostra em tela a mensagem de sucesso.
             testData.push(value);
             localStorage.setItem('test', JSON.stringify(testData));
             setIsActive(true);
@@ -95,6 +102,7 @@ const TestForm = () => {
                         <input placeholder="Ex.: 1000g"
                             type="number"
                             name="qtdMaterial"
+                            step='0.01'
                             required onChange={e => setNewQtd(Number(e.target.value))}
                         />
                     </div>
